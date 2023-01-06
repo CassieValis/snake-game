@@ -1,0 +1,153 @@
+import turtle
+import random
+import time
+
+#a tela
+screen= turtle.Screen()
+screen.title("Snake game")
+screen.setup(width=700,height=700)
+screen.tracer(0)
+screen.bgcolor("black")
+
+#a borda
+turtle.speed(5)
+turtle.pensize(4)  #largura da borda
+turtle.penup()
+turtle.goto(-310 ,250)   #x e y
+turtle.pendown()
+turtle.color("green")
+turtle.forward(600)
+turtle.right(90)
+turtle.forward(500)
+turtle.right(90)
+turtle.forward(600)
+turtle.right(90)
+turtle.forward(500)
+turtle.penup()
+turtle.hideturtle()
+
+
+
+#score
+score=0
+delay=0.1
+
+#a cobra
+snk=turtle.Turtle()
+snk.speed(0)
+snk.shape("square")
+snk.color("green")
+snk.penup
+snk.goto(0,0)
+snk.direction = "stop"
+
+#maça
+apple= turtle.Turtle()
+apple.speed(0)
+apple.shape("circle")
+apple.color("orange")         #cor da frutinha que todas sao maça
+apple.penup()
+apple.goto(30,30)
+
+old_apple = []
+
+#pontuação aqui escolhemos a cor a fonte,tamanho e posição na tela
+scoring= turtle.Turtle()
+scoring.speed(0)
+scoring.color("Green")
+scoring.penup()
+scoring.hideturtle()
+scoring.goto(0,300)
+scoring.write("Score :",align="center",font=("Courier",24,"bold"))
+
+#movendo a cobrinha
+
+def snk_go_up():
+  if snk.direction != "down":   #oras se ela não está em baixo elá está em cima da tela
+       snk.direction= "up"
+
+def snk_go_down():
+  if snk.direction != "up":    #oras se ela não está em cima  elá está em baixo da tela
+       snk.direction= "down"
+
+def snk_go_left():
+  if snk.direction != "right": #idem
+       snk.direction = "left"
+
+def snk_go_right():
+  if snk.direction != "left":   #idem
+      snk.direction= "right"
+
+def snk_move():
+        if snk.direction == "up":
+                y = snk.ycor()
+                snk.sety(y+20)
+        if snk.direction == "down":
+                y = snk.ycor()
+                snk.sety(y-20)
+        if snk.direction == "left":
+                x = snk.xcor()
+                snk.setx(x-20)
+        if snk.direction == "right":
+                x = snk.xcor()
+                snk.setx(x+20)
+
+#controlar usando o teclado
+
+screen.listen()
+screen.onkeypress(snk_go_up,"Up")
+screen.onkeypress(snk_go_down,"Down")
+screen.onkeypress(snk_go_left,"Left")
+screen.onkeypress(snk_go_right,"Right")
+
+while True:
+        screen.update()
+   
+        if snk.distance(apple) < 20:
+                x = random.randint(-290,270)
+                y = random.randint(-240,240)
+                apple.goto(x,y)
+                scoring.clear()
+                score += 1
+                scoring.write("Score: {}".format(score),align="center", font=("Courrier", 24, "bold"))
+                delay -= 0.001        
+                new_apple= turtle.Turtle()
+                new_apple.speed(0)
+                new_apple.shape("square")
+                new_apple.color("green")
+                new_apple.penup
+                old_apple.append(new_apple)
+        
+    
+#anexar o corpo da cobra
+        for index in range(len(old_apple)-1,0,-1):
+                a = old_apple[index -1].xcor()
+                b = old_apple[index -1].ycor()
+                old_apple[index].goto(a,b)
+        if len(old_apple) > 0:
+                a = snk.xcor()
+                b = snk.ycor()
+                old_apple[0].goto(a,b)
+        snk_move()
+
+#colisão borda
+        if snk.xcor() > 280 or snk.xcor() < -300 or snk.ycor() > 240 or snk.ycor() <- 240:
+                time.sleep(1)
+                screen.clear()
+                screen.bgcolor("black")
+                scoring.goto(0,0)
+                scoring.write("Gamer over \n Your score is : {}".format(score),align="center", font=("Courrier", 24, "bold"))
+  #colisão
+        for food in old_apple:
+                if food.distance(snk) < 20:
+                        time.sleep(1)
+                        screen.clear()
+                        screen.bgcolor("black")
+                        scoring.goto(0,0)
+                        scoring.write("Gamer over \n Your score is : {}".format(score),align="center", font=("Courrier", 24, "bold"))
+
+         
+        time.sleep(delay)
+       
+turtle.Terminator()
+            
